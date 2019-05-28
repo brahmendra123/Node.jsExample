@@ -1,0 +1,34 @@
+var user = require('../utils/mongoo-connection');
+/*var user;
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var loginSchema = new Schema({
+    name: {type:String},
+    email: {type:String},
+    password: {type:String}
+});
+var loginSchemaModel = mongoose.model('user', loginSchema);*/
+
+function LoginModule() {
+
+};
+LoginModule.prototype.create = function (data, callback) {
+    user.find({"email": data.email}, function (err, result) {
+        console.log(err, data);
+        if (err) {
+            callback(err, null)
+        } else {
+            if (result.length) {
+                if (data.password === result[0].password) {
+                    console.log(data.password, result[0].password)
+                    callback(null, {"Msg": "Successfully Logged in"})
+                } else {
+                    callback(null, {status: 404, 'Msg': "Invalid Password"})
+                }
+            } else {
+                callback(null, {status: 404, "Msg": "User Not Found Pls SignUP"})
+            }
+        }
+    })
+};
+module.exports = LoginModule;
